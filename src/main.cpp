@@ -3,6 +3,10 @@
 #include <vector>
 #include <unordered_map>
 #include <sstream>
+#include <filesystem>
+#include <cstdlib>
+
+namespace fs = std::filesystem;
 
 enum shell_command {
     exit0,
@@ -14,6 +18,8 @@ int main() {
     // Flush after every std::cout / std:cerr
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
+
+    std::string path = getenv("PATH");
 
     std::unordered_map<std::string, shell_command> commands;
     commands.insert({"exit", exit0}); 
@@ -36,7 +42,7 @@ int main() {
             std::cout << str_command << ": command not found\n";
             continue;
         }
-
+        
         auto command = commands[str_command];
         
         switch (command) {
@@ -49,9 +55,26 @@ int main() {
             case type: {
                 if (commands.contains(message)) {
                     std::cout << message << " is a shell builtin\n";
-                } else {
-                    std::cout << message << ": not found\n";
+                    break;
+                } 
+
+                ss = std::stringstream(path);
+                std::string line;
+                bool found = false;
+                while (!found && getline(ss, line, ':')) {
+                    fs::path directory(line);
+                    for (const auto& entry: fs::directory_iterator(directory)) {
+                        if (entry.path().filename() == message) {
+                            auto fpath = entry.path().string();
+                            std::cout << message << " is " << fpath << std::endl;
+                            found = true;
+                            break;
+                        }
+                    }
                 }
+
+                if (!found)
+                    std::cout << message << ": not found\n";
                 break;
             };
 
