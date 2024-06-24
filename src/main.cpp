@@ -12,7 +12,8 @@ namespace fs = std::filesystem;
 enum shell_command {
     exit0,
     type,
-    echo
+    echo,
+    pwd
 };
 
 std::optional<std::string> find_file(const std::string& path, const std::string& filename) {
@@ -40,7 +41,8 @@ int main() {
     std::unordered_map<std::string, shell_command> commands;
     commands.insert({"exit", exit0}); 
     commands.insert({"type", type}); 
-    commands.insert({"echo", echo});
+    commands.insert({"echo", echo}); 
+    commands.insert({"pwd", pwd});
 
     while(true) {
         std::cout << "$ ";
@@ -94,6 +96,11 @@ int main() {
                 std::cout << message << std::endl;
                 break;
             };
+
+            case pwd: {
+                std::filesystem::path current_dir = std::filesystem::current_path();
+                std::cout << current_dir.string() << std::endl;
+            }
         }
     }
 }
