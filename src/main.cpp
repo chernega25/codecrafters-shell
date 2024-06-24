@@ -15,17 +15,18 @@ std::vector<std::string> split_message(const std::string &message, const std::st
 }
 
 int main() {
-  // Flush after every std::cout / std:cerr
-  std::cout << std::unitbuf;
-  std::cerr << std::unitbuf;
+    // Flush after every std::cout / std:cerr
+    std::cout << std::unitbuf;
+    std::cerr << std::unitbuf;
 
+    while(true) {
+        std::cout << "$ ";
+        
+        std::string input;
+        std::getline(std::cin, input);
 
-  std::cout << "$ ";
-  
-  std::string input;
-  std::getline(std::cin, input);
-
-  auto commands = split_message(input, " ");
-  std::cout << commands[0] << ": command not found" << std::endl;
+        auto commands = split_message(input, " ");
+        std::cout << commands[0] << ": command not found" << std::endl;
+    }
 
 }
