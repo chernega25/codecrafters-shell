@@ -5,6 +5,7 @@
 #include <sstream>
 #include <filesystem>
 #include <cstdlib>
+#include <optional>
 
 namespace fs = std::filesystem;
 
@@ -13,6 +14,21 @@ enum shell_command {
     type,
     echo
 };
+
+std::optional<std::string> find_file(const std::string& path, const std::string& filename) {
+    std::stringstream ss = std::stringstream(path);
+    std::string line;
+    while (getline(ss, line, ':')) {
+        fs::path directory(line);
+        for (const auto& entry: fs::directory_iterator(directory)) {
+            if (entry.path().filename() == filename) {
+                return entry.path().string();
+            }
+        }
+    }
+
+    return {};
+}
 
 int main() {
     // Flush after every std::cout / std:cerr
@@ -39,7 +55,13 @@ int main() {
         std::getline(ss, message);
 
         if (!commands.contains(str_command)) {
-            std::cout << str_command << ": command not found\n";
+            auto filepath = find_file(path, str_command);
+            if (filepath.has_value()) {
+                std::string exec = filepath.value() + ' ' + message;
+                std::system(exec.c_str());
+            } else {
+                std::cout << str_command << ": command not found\n";
+            }
             continue;
         }
         
@@ -58,23 +80,13 @@ int main() {
                     break;
                 } 
 
-                ss = std::stringstream(path);
-                std::string line;
-                bool found = false;
-                while (!found && getline(ss, line, ':')) {
-                    fs::path directory(line);
-                    for (const auto& entry: fs::directory_iterator(directory)) {
-                        if (entry.path().filename() == message) {
-                            auto fpath = entry.path().string();
-                            std::cout << message << " is " << fpath << std::endl;
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!found)
+                auto filepath = find_file(path, message);
+                if (filepath.has_value()) {
+                    std::cout << message << " is " << filepath.value() << std::endl;
+                } else {
                     std::cout << message << ": not found\n";
+                }
+                
                 break;
             };
 
