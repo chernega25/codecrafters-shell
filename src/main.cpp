@@ -38,6 +38,7 @@ int main() {
     std::cerr << std::unitbuf;
 
     std::string path = getenv("PATH");
+    std::string home = getenv("HOME");
 
     std::unordered_map<std::string, shell_command> commands;
     commands.insert({"exit", exit0}); 
@@ -106,6 +107,11 @@ int main() {
             }
 
             case cd: {
+                auto pos = message.find('~');
+                if (pos != std::string::npos) {
+                    message.replace(pos, 1, home);
+                }
+                
                 try {
                     std::filesystem::current_path(message);
                 } catch (fs::filesystem_error error) {
