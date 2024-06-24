@@ -101,6 +101,7 @@
         "iomanip": "cpp",
         "stack": "cpp",
         "thread": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "functional": "cpp"
     }
 }
