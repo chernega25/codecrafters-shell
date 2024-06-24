@@ -22,15 +22,19 @@ int main() {
     while(true) {
         std::cout << "$ ";
         
-        std::string input;
-        std::getline(std::cin, input);
+        std::string command;
+        std::getline(std::cin, command, ' ');
+        std::string message;
+        std::getline(std::cin, message);
 
-        auto commands = split_message(input, " ");
+        // auto commands = split_message(input, " ");
 
-        if (commands[0] == "exit") {
+        if (command == "exit") {
             return 0;
+        } else if (command == "echo") {
+            std::cout << message << std::endl;
         } else {
-            std::cout << commands[0] << ": command not found" << std::endl;
+            std::cout << command << ": command not found\n";
         }
     }
 }
