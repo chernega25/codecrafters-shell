@@ -26,7 +26,11 @@ int main() {
         std::getline(std::cin, input);
 
         auto commands = split_message(input, " ");
-        std::cout << commands[0] << ": command not found" << std::endl;
-    }
 
+        if (commands[0] == "exit") {
+            return 0;
+        } else {
+            std::cout << commands[0] << ": command not found" << std::endl;
+        }
+    }
 }
