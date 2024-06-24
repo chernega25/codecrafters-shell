@@ -21,12 +21,12 @@
 
     // Define the environment variable to use C++23 standard
     "cmake.environment": {
-        "CXXFLAGS": "-std=c++23"
+        "CXXFLAGS": "-std=c++20"
     },
 
     // Additional compiler flags for CMake to use C++23 standard
     "cmake.buildArgs": [
-        "-DCMAKE_CXX_STANDARD=23"
+        "-DCMAKE_CXX_STANDARD=20"
     ],
 
     // Optionally, adjust logging level for more details during configuration
