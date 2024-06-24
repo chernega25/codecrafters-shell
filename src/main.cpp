@@ -13,7 +13,8 @@ enum shell_command {
     exit0,
     type,
     echo,
-    pwd
+    pwd,
+    cd
 };
 
 std::optional<std::string> find_file(const std::string& path, const std::string& filename) {
@@ -43,6 +44,7 @@ int main() {
     commands.insert({"type", type}); 
     commands.insert({"echo", echo}); 
     commands.insert({"pwd", pwd});
+    commands.insert({"cd", cd});
 
     while(true) {
         std::cout << "$ ";
@@ -100,6 +102,16 @@ int main() {
             case pwd: {
                 std::filesystem::path current_dir = std::filesystem::current_path();
                 std::cout << current_dir.string() << std::endl;
+                break;
+            }
+
+            case cd: {
+                try {
+                    std::filesystem::current_path(message);
+                } catch (fs::filesystem_error error) {
+                    std::cout << "cd: " << message << ": No such file or directory\n";
+                }
+                break;
             }
         }
     }
